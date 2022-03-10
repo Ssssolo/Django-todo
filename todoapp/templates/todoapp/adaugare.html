@@ -1,0 +1,16 @@
+{% extends 'todoapp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"" role="alert">
+      <strong>Succes!</strong> {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endfor %}
+{% endif %}
+{% crispy form %}
+{% endblock %}

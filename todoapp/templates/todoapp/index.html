@@ -1,0 +1,97 @@
+{% extends 'todoapp/base.html' %}
+{% block content %}
+<br>
+<a href="./"><center><h1>Todo App</h1></center><br></a>
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"" role="alert">
+      <strong>Informare:</strong> {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endfor %}
+{% endif %}
+{% if user.is_authenticated %}
+<a href="adaugare/">
+  <button class="btn btn-info btn-block">ADAUGA O NOTITA</button><br>
+</a>
+{% endif %}
+<div class="table-responsive">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Titlu</th>
+        <th scope="col">Descriere</th>
+        <th scope="col">Completat</th>
+        <th scope="col">Data creare</th>
+        <th scope="col">Actiune</th>
+      </tr>
+    </thead>
+    <tbody>
+          {% if not user.is_authenticated %}
+            <tr>
+              <td scope="row">#</td>
+              <td>Intra in cont pentru a vedea datele introduse!</td>
+              <td>#</td>
+              <td>#</td>
+              <td>#</td>
+              <td>#</td>
+          </tr>
+          {% else %}
+          {% if page_obj.paginator.count == 0 %}
+          <tr>
+              <td scope="row">#</td>
+              <td>Nu exista nicio data inregistrata in tabel!</td>
+              <td>#</td>
+              <td>#</td>
+              <td>#</td>
+              <td>#</td>
+          </tr>
+          {% else %}
+              {% for todo in object_list %}
+              <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ todo.titlu }}</td>
+                  <td>{{ todo.completat|yesno:"<strike>,"|safe }}{{ todo.descriere }}{{ todo.completat|yesno:"</strike>,"|safe }}</td> 
+                  <td>{{ todo.completat|yesno:"Da, Nu" }}</td>
+                  <td>{{ todo.data_creare }}</td>
+                  <td>
+                      <a href="editare/{{ todo.id }}" title="Editare"><button class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i></button></a>
+                      {% if todo.prioritate == False %}
+                      <a href="clonare/{{ todo.id }}" title="Clonare"><button class="btn btn-info"><i class="fa fa-clone" aria-hidden="true"></i></button></a>
+                      <a href="prioritate/{{ todo.id }}" title="Prioritate"><button class="btn btn-warning"><i class="fa fa-level-up-alt" aria-hidden="true"></i></button></a>
+                      <button class="btn btn-danger" title="Sterge" data-toggle="modal" data-target="#sterge" onclick="modificare('{{ todo.titlu }}', {{ todo.id }})"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                      {% else %}
+                      <a href="completare/{{ todo.id }}" title="Completare"><button class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></button></a>
+                      <a href="prioritate/{{ todo.id }}" title="Prioritate"><button class="btn btn-danger"><i class="fa fa-level-down-alt" aria-hidden="true"></i></button></a>
+                      {% endif %}
+                  </td>
+              </tr>
+              {% endfor %}
+          {% endif %}
+          {% endif %}
+    </tbody>
+  </table>
+</div>
+<div class="modal fade" id="sterge" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalCenterTitle">Sterge activitate</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				Sunteti sigur ca vreti sa stergeti <b><span id="titlu"></span></b>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Anuleaza</button>
+                <a href="" id="link"><button type="button" class="btn btn-danger">Sterge</button></a>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

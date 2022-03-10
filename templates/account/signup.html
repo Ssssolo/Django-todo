@@ -1,0 +1,26 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<br>
+<center>
+  <h1>{% trans "Creaza un cont" %}</h1>
+</center>
+<br>
+<div class="alert alert-warning" role="alert">
+  {% blocktrans %}Ai deja un cont? Atunci te rugam <a href="{{ login_url }}">sa te loghezi</a> {% endblocktrans %}
+</div>
+
+<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <button type="submit" class="btn btn-success btn-block">{% trans "Inregistrare" %} &raquo;</button>
+</form>
+
+{% endblock %}
